@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
@@ -82,22 +83,26 @@ def preprocess_data(
         index=X_test.index
     )
 
-    # Step 8: Simpan pipeline (imputer + scaler)
-    preprocessing_pipeline = Pipeline(steps=[
+    # Step 8: Save Processed Data
+    os.makedirs("data/processed", exist_ok=True)
+    os.makedirs("models", exist_ok=True)
+    X_train_scaled.to_csv("data/processed/X_train.csv", index=False)
+    X_test_scaled.to_csv("data/processed/X_test.csv", index=False)
+    y_train.to_csv("data/processed/y_train.csv", index=False)
+    y_test.to_csv("data/processed/y_test.csv", index=False)
+
+    # Step 9: Save pipeline
+    pipeline = Pipeline([
         ("imputer", imputer),
         ("scaler", scaler)
     ])
+    dump(pipeline, save_pipeline_path)
 
-    dump(preprocessing_pipeline, save_pipeline_path)
+    print("Preprocessing selesai & data tersimpan")
 
-    return X_train_scaled, X_test_scaled, y_train, y_test
 
-X_train, X_test, y_train, y_test = preprocess_data(
-    WineQT="WineQT.csv",
-    target_column="quality",
-    save_pipeline_path="preprocessing_pipeline.joblib"
-)
-
-print("Preprocessing selesai")
-print("Train shape:", X_train.shape)
-print("Test shape:", X_test.shape)
+if __name__ == "__main__":
+    preprocess_data(
+        WineQT="data/raw/WineQT.csv",
+        target_column="quality"
+    )

@@ -96,7 +96,7 @@ def preprocess_data(
         ("imputer", imputer),
         ("scaler", scaler)
     ])
-    dump(pipeline, save_pipeline_path)
+    dump(pipeline, "models/preprocessing_pipeline.joblib")
 
     print("Preprocessing selesai & data tersimpan")
 
@@ -106,5 +106,6 @@ if __name__ == "__main__":
         WineQT="data/raw/WineQT.csv",
         target_column="quality"
     )
+
 
 

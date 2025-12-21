@@ -25,7 +25,7 @@ jobs:
 
     - name: Run preprocessing script
       run: |
-        python src/automate_Jeaconia-Elfrida-Tiono.py
+        python automate_Jeaconia-Elfrida-Tiono.py
 
     - name: Upload processed dataset
       uses: actions/upload-artifact@v4

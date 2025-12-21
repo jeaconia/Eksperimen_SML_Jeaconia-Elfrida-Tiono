@@ -1,9 +1,7 @@
-name: WineQT Preprocessing Pipeline
+name: Automated Preprocessing Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
@@ -18,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.10'
 
     - name: Install dependencies
       run: |
@@ -27,7 +25,13 @@ jobs:
 
     - name: Run preprocessing script
       run: |
-        python automate_Jeaconia-Elfrida-Tiono.py
+        python src/automate_Jeaconia-Elfrida-Tiono.py
+
+    - name: Upload processed dataset
+      uses: actions/upload-artifact@v4
+      with:
+        name: processed-data
+        path: data/processed/
 
     - name: Upload preprocessing pipeline
       uses: actions/upload-artifact@v4

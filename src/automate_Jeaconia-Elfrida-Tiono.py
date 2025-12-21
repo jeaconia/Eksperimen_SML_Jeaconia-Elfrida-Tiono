@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
@@ -105,4 +106,5 @@ if __name__ == "__main__":
         WineQT="data/raw/WineQT.csv",
         target_column="quality"
     )
+
 

@@ -9,37 +9,36 @@ from joblib import dump
 
 def preprocess_data(
     dataset_path,
-    target_column="quality",
+    target_column="Rings",
     test_size=0.3,
     random_state=42
 ):
     """
-    Fungsi Preprocessing Dataset WineQT
+    Fungsi Preprocessing Dataset
     """
-
-    # 1. Load data
+    
+    # Step 1: Load Data
     df = pd.read_csv(dataset_path)
 
     # Drop kolom Id jika ada
-    df = df.drop(columns=["Id"], errors="ignore")
+    df = df.drop(columns=["Sex"], errors="ignore")
 
-    # 2. Data cleaning
+    # Step 2: Data Cleaning
     df = df.drop_duplicates()
 
-    # 3. Pisahkan fitur & target
+    # Step 3: Split fitur & target
     X = df.drop(target_column, axis=1)
     y = df[target_column]
 
-    # 4. Train-test split
+    # Step 4: Train-test split
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
         test_size=test_size,
         random_state=random_state,
-        stratify=y
     )
 
-    # 5. Imputasi missing value
+    # Step 5: Imputasi Missing Value
     imputer = SimpleImputer(strategy="mean")
 
     X_train = pd.DataFrame(
@@ -52,7 +51,7 @@ def preprocess_data(
         columns=X_test.columns
     )
 
-    # 6. Outlier handling (IQR)
+    # Step 6: Outlier Handling (IQR)
     for col in X_train.columns:
         Q1 = X_train[col].quantile(0.25)
         Q3 = X_train[col].quantile(0.75)
@@ -64,7 +63,7 @@ def preprocess_data(
         X_train[col] = X_train[col].clip(lower, upper)
         X_test[col] = X_test[col].clip(lower, upper)
 
-    # 7. Scaling
+    # Step 7: Scaling
     scaler = MinMaxScaler()
 
     X_train_scaled = pd.DataFrame(
@@ -77,8 +76,8 @@ def preprocess_data(
         columns=X_test.columns
     )
 
-    # 8. Simpan hasil preprocessing
-    processed_dir = "preprocessing/WineQT_preprocessing"
+    # Step 8: Save Processed Data
+    processed_dir = "preprocessing/Abalone_preprocessing"
     model_dir = "models"
 
     os.makedirs(processed_dir, exist_ok=True)
@@ -89,7 +88,7 @@ def preprocess_data(
     y_train.to_csv(f"{processed_dir}/y_train.csv", index=False)
     y_test.to_csv(f"{processed_dir}/y_test.csv", index=False)
 
-    # 9. Simpan pipeline
+    # Step 9: Save Pipeline
     pipeline = Pipeline([
         ("imputer", imputer),
         ("scaler", scaler)
@@ -97,11 +96,11 @@ def preprocess_data(
 
     dump(pipeline, f"{model_dir}/preprocessing_pipeline.joblib")
 
-    print("✅ Preprocessing selesai & tersimpan")
+    print("✅ Preprocessing selesai & data tersimpan")
 
 
 if __name__ == "__main__":
     preprocess_data(
-        dataset_path="WineQT_raw/WineQT.csv",
+        dataset_path="Abalone_raw/WineQT.csv",
         target_column="quality"
     )

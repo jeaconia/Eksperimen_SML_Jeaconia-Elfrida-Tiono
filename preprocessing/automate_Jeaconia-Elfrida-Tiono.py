@@ -101,6 +101,7 @@ def preprocess_data(
 
 if __name__ == "__main__":
     preprocess_data(
-        dataset_path="Abalone_raw/WineQT.csv",
+        dataset_path="Abalone_raw/Abalone.csv",
         target_column="quality"
     )
+

@@ -24,29 +24,28 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install pandas scikit-learn joblib
 
     - name: Run preprocessing script
       run: |
-        python src/automate_Jeaconia-Elfrida-Tiono.py
+        python preprocessing/automate_Jeaconia-Elfrida-Tiono.py
 
     - name: Upload processed dataset
       uses: actions/upload-artifact@v4
       with:
-        name: processed-data
-        path: data/processed/
+        name: processed-dataset
+        path: preprocessing/WineQT_preprocessing/
 
     - name: Upload preprocessing pipeline
       uses: actions/upload-artifact@v4
       with:
         name: preprocessing-pipeline
-        path: preprocessing_pipeline.joblib
-        
+        path: models/WineQT_pipeline.joblib
+
     - name: Commit processed data
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git add data/processed models
-        git commit -m "Auto-update processed data" || echo "No changes to commit"
+        git add preprocessing/WineQT_preprocessing models
+        git commit -m "Auto-update preprocessing output" || echo "No changes to commit"
         git push
-

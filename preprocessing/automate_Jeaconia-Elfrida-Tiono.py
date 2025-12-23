@@ -102,7 +102,8 @@ def preprocess_data(
 if __name__ == "__main__":
     preprocess_data(
         dataset_path="Abalone_raw/abalone.csv",
-        target_column="quality"
+        target_column="Rings"
     )
+
 
 

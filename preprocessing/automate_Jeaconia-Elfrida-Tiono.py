@@ -6,7 +6,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
 from joblib import dump
 
-
 def preprocess_data(
     dataset_path,
     target_column="Rings",
@@ -14,13 +13,13 @@ def preprocess_data(
     random_state=42
 ):
     """
-    Fungsi Preprocessing Dataset
+    Fungsi Preprocessing Dataset yang mengembalikan data siap latih.
     """
     
     # Step 1: Load Data
     df = pd.read_csv(dataset_path)
 
-    # Drop kolom Id jika ada
+    # Drop kolom kategori (Sex) jika tidak dilakukan encoding
     df = df.drop(columns=["Sex"], errors="ignore")
 
     # Step 2: Data Cleaning
@@ -41,6 +40,7 @@ def preprocess_data(
     # Step 5: Imputasi Missing Value
     imputer = SimpleImputer(strategy="mean")
 
+    # Fit dan transform pada data train, transform pada data test
     X_train = pd.DataFrame(
         imputer.fit_transform(X_train),
         columns=X_train.columns
@@ -51,7 +51,7 @@ def preprocess_data(
         columns=X_test.columns
     )
 
-    # Step 6: Outlier Handling (IQR)
+    # Step 6: Outlier Handling (IQR) - Clipping
     for col in X_train.columns:
         Q1 = X_train[col].quantile(0.25)
         Q3 = X_train[col].quantile(0.75)
@@ -76,10 +76,9 @@ def preprocess_data(
         columns=X_test.columns
     )
 
-    # Step 8: Save Processed Data
+    # Step 8: Save Processed Data (Optional side effect)
     processed_dir = "preprocessing/Abalone_preprocessing"
     model_dir = "models"
-
     os.makedirs(processed_dir, exist_ok=True)
     os.makedirs(model_dir, exist_ok=True)
 
@@ -93,17 +92,17 @@ def preprocess_data(
         ("imputer", imputer),
         ("scaler", scaler)
     ])
-
     dump(pipeline, f"{model_dir}/preprocessing_pipeline.joblib")
 
-    print("✅ Preprocessing selesai & data tersimpan")
-
+    print("✅ Preprocessing selesai")
+    return X_train_scaled, X_test_scaled, y_train, y_test
 
 if __name__ == "__main__":
-    preprocess_data(
+    # Sekarang kita bisa menangkap hasil return dari fungsi tersebut
+    X_train, X_test, y_train, y_test = preprocess_data(
         dataset_path="Abalone_raw/abalone.csv",
         target_column="Rings"
     )
-
-
-
+    
+    # Cek apakah data berhasil di-return
+    print(f"Bentuk X_train: {X_train.shape}")
